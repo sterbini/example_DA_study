@@ -86,8 +86,8 @@ config_collider:
       ip2: 20
       ip5: 25
       ip8: 20
-    sigma_z: 0.0761
-    num_particles_per_bunch: 1.15e11
+    sigma_z: 0.09 # 0.0761, increased for the TDIS
+    num_particles_per_bunch: 1.6e11
     nemitt_x: 2.2e-6
     nemitt_y: 2.2e-6
     mask_with_filling_pattern:
@@ -103,7 +103,7 @@ config_collider:
   #     constraints:
   #       max_intensity: 1.8e11
   #       max_PU: 70
-
+  
   skip_leveling: true
   config_lumi_leveling:   
     ip2:
@@ -139,8 +139,8 @@ config_collider:
         - corr_co_acbcvs5.r2b1
 
     ip8:
-      luminosity: 2.0e+32
-      num_colliding_bunches: null # This will be set automatically according to the filling scheme 
+      luminosity: 2.0e+31
+      num_colliding_bunches: 2112 # This will be set automatically according to the filling scheme 
       impose_separation_orthogonal_to_crossing: true
       knobs:
         - on_sep8h
