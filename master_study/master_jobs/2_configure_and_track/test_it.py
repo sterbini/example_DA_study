@@ -80,10 +80,10 @@ from xtrack import lumi
 assert twiss_b1.T_rev0 == twiss_b1.T_rev0
 
 for ii, colliding_bunches in zip(['ip1','ip2','ip5','ip8'],
-                                [bb_schedule.n_coll_ATLAS,
-                                 bb_schedule.n_coll_ALICE,
-                                 bb_schedule.n_coll_ATLAS,
-                                 bb_schedule.n_coll_LHCb]):
+                                [1,
+                                 0,
+                                 1,
+                                 0]):
     aux = lumi.luminosity_from_twiss(
         colliding_bunches,
         config_collider['config_beambeam']['num_particles_per_bunch'],
@@ -107,6 +107,10 @@ for my_ip in ['on_alice_normalized','on_lhcb_normalized']:
     print(f'*****************\n')
 
 # %%
+collider.vars['beambeam_scale'] = 1
+collider.vars['bb_ho.l2b2_05_scale_strength'] = 0 #deactivate (for example) this lens
+twiss_b1 = collider['lhcb1'].twiss()
+twiss_b2 = collider['lhcb2'].twiss().reverse()
 for my_ip in [1,2,5,8]:
     print(f'*****************\nValues for IP{my_ip}:')
     my_df = []
@@ -120,7 +124,7 @@ for my_ip in [1,2,5,8]:
 
 # %%
 for ii in collider.vars.get_independent_vars():
-    if 'beam' in ii:
+    if 'bb_ho' in ii:
         print(ii)
 # %%
 collider.vars['beambeam_scale']._value 
@@ -129,3 +133,72 @@ for ii in config_collider['config_knobs_and_tuning']['knob_settings'].keys():
     if len(collider.vars[ii]._find_dependant_targets())==1:
         print(ii)
 # %%
+import matplotlib.pyplot as plt
+plt.plot(twiss_b1['s'], twiss_b1['x'])
+plt.plot(twiss_b1['s'], twiss_b1['y'])
+# %%
+def set_orbit_flat(collider):
+    for ii in ['on_x1', 'on_sep1', 'on_x2h', 'on_sep2h', 'on_x2v', 'on_sep2v', 'on_x5', 
+               'on_sep5', 'on_x8h', 'on_sep8h', 'on_x8v', 'on_sep8v', 'on_disp', 
+               'on_alice_normalized', 'on_lhcb_normalized','on_sol_atlas', 'on_sol_cms', 
+               'on_sol_alice', 'i_oct_b1', 'i_oct_b2']:
+        collider.vars[ii] = 0
+
+
+set_orbit_flat(collider)
+twiss_b1 = collider['lhcb1'].twiss()
+twiss_b2 = collider['lhcb2'].twiss().reverse()
+plt.plot(twiss_b1['s'], twiss_b1['x'])
+plt.plot(twiss_b1['s'], twiss_b1['y'])
+
+# %%
+config, config_sim, config_collider = configure_and_track.read_configuration()
+
+
+def set_orbit_from_config(collider, config):
+    for ii in ['on_x1', 'on_sep1', 'on_x2h', 'on_sep2h', 'on_x2v', 'on_sep2v', 'on_x5', 
+               'on_sep5', 'on_x8h', 'on_sep8h', 'on_x8v', 'on_sep8v', 'on_disp', 
+               'on_alice_normalized', 'on_lhcb_normalized', 'on_sol_atlas', 'on_sol_cms', 
+               'on_sol_alice', 'i_oct_b1', 'i_oct_b2']:
+        collider.vars[ii] = config['config_collider']['config_knobs_and_tuning']['knob_settings'][ii]
+
+set_orbit_from_config(collider, config)
+twiss_b1 = collider['lhcb1'].twiss()
+twiss_b2 = collider['lhcb2'].twiss().reverse()
+plt.plot(twiss_b1['s'], twiss_b1['x'])
+plt.plot(twiss_b1['s'], twiss_b1['y'])
+
+# %%
+#removing bb to understand beta-beating
+collider.vars['beambeam_scale'] = 0
+twiss_b1 = collider['lhcb1'].twiss()
+twiss_b2 = collider['lhcb2'].twiss().reverse()
+plt.plot(twiss_b1['s'], np.sqrt(twiss_b1['betx']))
+plt.plot(twiss_b1['s'], np.sqrt(twiss_b1['bety']))
+#putting beam beam back on
+collider.vars['beambeam_scale'] = 1
+twiss_b1 = collider['lhcb1'].twiss()
+twiss_b2 = collider['lhcb2'].twiss().reverse()
+# %%
+
+# with collider.vars['beambeam_scale']:
+#     print(collider.vars['beambeam_scale']._value)
+#     twiss_b1 = collider['lhcb1'].twiss()
+#     twiss_b2 = collider['lhcb2'].twiss().reverse()
+#     plt.plot(twiss_b1['s'], np.sqrt(twiss_b1['betx']))
+#     plt.plot(twiss_b1['s'], np.sqrt(twiss_b1['bety']))
+print(collider.vars['beambeam_scale']._value)
+
+# %%
+set_orbit_from_config(collider, config)
+collider.vars['beambeam_scale'] = 2.5
+collider.vars['vrf400'] = 6
+
+twiss_b1 = collider['lhcb1'].twiss()
+twiss_b2 = collider['lhcb2'].twiss().reverse()
+plt.plot(twiss_b1['s'], twiss_b1['dx_zeta']*1e6)
+plt.plot(twiss_b1['s'], twiss_b1['dy_zeta']*1e6)
+#twiss_b2[['s','dx_zeta','dy_zeta'],'.*BPLV.*']
+# %%
+set_orbit_from_config(collider, config)
+
