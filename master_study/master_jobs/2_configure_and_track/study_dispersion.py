@@ -56,7 +56,7 @@ my_df[my_df['delta_py'] != 0]
 # %%
 collider['lhcb1'].element_dict['bb_lr.r1b1_01'].to_dict()
 # %%
-(collider['lhcb1'].element_dict['bb_ho.c1b1_00'].to_dict())
+collider['lhcb1'].element_dict['bb_ho.c1b1_00'].to_dict()
 
 # %%
 plt.plot(twiss_b1['s', : ], twiss_b1['x', : ],label='x')
