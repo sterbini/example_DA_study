@@ -71,7 +71,7 @@ def install_beam_beam(collider, config_collider):
         bunch_spacing_buckets=config_bb["bunch_spacing_buckets"],
         sigmaz=config_bb["sigma_z"],
     )
-
+    
     return collider, config_bb
 
 
@@ -412,10 +412,10 @@ def configure_collider(
                         return obj.tolist()
                     return super(NpEncoder, self).default(obj)
 
-            with open("collider.json", "w") as fid:
+            with open("collider_ip8.json", "w") as fid:
                 json.dump(collider_dict, fid, cls=NpEncoder)
         else:
-            collider.to_json("collider.json")
+            collider.to_json("collider_ip8.json")
 
     if return_collider_before_bb:
         return collider, config_bb, collider_before_bb

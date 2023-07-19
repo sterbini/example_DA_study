@@ -25,8 +25,8 @@ config_collider:
       on_disp  :    0.000 
 
       # Magnets of the experiments
-      on_alice_normalized: 1
-      on_lhcb_normalized: 1
+      on_alice_normalized: 0
+      on_lhcb_normalized: 0
       on_sol_atlas: 0
       on_sol_cms: 0
       on_sol_alice: 0

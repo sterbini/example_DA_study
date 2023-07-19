@@ -91,9 +91,9 @@ def build_sequence(
         mad.input("""
         !Cycling w.r.t. to IP3 (mandatory to find closed orbit in collision in the presence of errors)
         if (mylhcbeam<3){
-        seqedit, sequence=lhcb1; flatten; cycle, start=IP3; flatten; endedit;
+        seqedit, sequence=lhcb1; flatten; cycle, start=IP8; flatten; endedit;
         };
-        seqedit, sequence=lhcb2; flatten; cycle, start=IP3; flatten; endedit;
+        seqedit, sequence=lhcb2; flatten; cycle, start=IP8; flatten; endedit;
         """)
 
     mad.input("""
