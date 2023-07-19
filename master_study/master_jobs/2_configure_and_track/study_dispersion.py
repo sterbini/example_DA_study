@@ -39,9 +39,26 @@ twiss_b2 = collider['lhcb2'].twiss().reverse()
 
 # %%
 my_df = twiss_b1.to_pandas()
-my_df[my_df['x']!=0]
+my_df['diff_px']=my_df['px'].diff(periods=-1)
+my_df[my_df['diff_px']!=0][['name','diff_px']].sort_values(by='diff_px')
 
 # %%
+import xpart as xp
+my_particle = xp.Particles(p0c=450e9, #eV
+             q0=1,
+             mass0=xp.PROTON_MASS_EV)
+
+
+collider['lhcb1'].element_dict['ip3'].track(my_particle)
+# %%
+for ii in collider['lhcb1'].element_dict:
+    if 'bb_lr' in ii:
+        print()
+        my_particle = xp.Particles(p0c=450e9, #eV
+             q0=1,
+             mass0=xp.PROTON_MASS_EV)
+        collider['lhcb1'].element_dict[ii].track(my_particle)
+        print(f'element {ii}: delta_px = {my_particle.px[0]},  delta_py = {my_particle.py[0]}')
 
 # %%
 plt.plot(twiss_b1['s', : ], twiss_b1['x', : ],label='x')
