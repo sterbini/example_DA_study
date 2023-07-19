@@ -3,9 +3,10 @@ import xtrack as xt
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+
 # %%
-# %%
-collider = xt.Multiline.from_json('collider.json')
+collider = xt.Multiline.from_json('/afs/cern.ch/work/a/afornara/public/run3/example_DA_study'
+                                  '/master_study/master_jobs/2_configure_and_track/collider.json')
 
 # %%
 collider.build_trackers()
@@ -35,6 +36,12 @@ collider.vars['vrf400'] = 12
 set_orbit_flat(collider)
 twiss_b1 = collider['lhcb1'].twiss()
 twiss_b2 = collider['lhcb2'].twiss().reverse()
+
+# %%
+my_df = twiss_b1.to_pandas()
+my_df[my_df['x']!=0]
+
+# %%
 
 # %%
 plt.plot(twiss_b1['s', : ], twiss_b1['x', : ],label='x')
