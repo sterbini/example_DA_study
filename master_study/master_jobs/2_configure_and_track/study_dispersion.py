@@ -37,28 +37,26 @@ set_orbit_flat(collider)
 twiss_b1 = collider['lhcb1'].twiss()
 twiss_b2 = collider['lhcb2'].twiss().reverse()
 
-# %%
-my_df = twiss_b1.to_pandas()
-my_df['diff_px']=my_df['px'].diff(periods=-1)
-my_df[my_df['diff_px']!=0][['name','diff_px']].sort_values(by='diff_px')
 
-# %%
+# %% It seems that the HO is kicking...
+# It takes a while to run (2-3 minutes)
 import xpart as xp
-my_particle = xp.Particles(p0c=450e9, #eV
-             q0=1,
-             mass0=xp.PROTON_MASS_EV)
-
-
-collider['lhcb1'].element_dict['ip3'].track(my_particle)
-# %%
+my_list = []
 for ii in collider['lhcb1'].element_dict:
-    if 'bb_lr' in ii:
-        print()
+    ##if 'bb' in ii:
         my_particle = xp.Particles(p0c=450e9, #eV
              q0=1,
              mass0=xp.PROTON_MASS_EV)
         collider['lhcb1'].element_dict[ii].track(my_particle)
-        print(f'element {ii}: delta_px = {my_particle.px[0]},  delta_py = {my_particle.py[0]}')
+        my_list.append({'name':ii,'delta_px':my_particle.px[0],'delta_py':my_particle.py[0]})
+        #print(f'element {ii}: delta_px = {my_particle.px[0]},  delta_py = {my_particle.py[0]}')
+my_df = pd.DataFrame(my_list)
+my_df[my_df['delta_px'] != 0]
+my_df[my_df['delta_py'] != 0]
+# %%
+collider['lhcb1'].element_dict['bb_lr.r1b1_01'].to_dict()
+# %%
+(collider['lhcb1'].element_dict['bb_ho.c1b1_00'].to_dict())
 
 # %%
 plt.plot(twiss_b1['s', : ], twiss_b1['x', : ],label='x')
