@@ -162,12 +162,15 @@ collider['lhcb1'].track(my_particle)
 collider['lhcb1'].discard_tracker()
 
 my_index = collider['lhcb1'].element_names.index('mbxwt.1l2')
-my_index = collider['lhcb1'].element_names.index('ip5')
-
+#my_index = collider['lhcb1'].element_names.index('ip5')
 
 my_line = xt.Line(
-    elements=collider['lhcb1'].element_dict,
-    element_names=[ii for ii in collider['lhcb1'].element_names][:my_index-1])
+    elements=(collider['lhcb1'].element_dict | 
+              {'a': xt.Multipole(_order=0, inv_factorial_order=1.0, 
+                                 length=1.53, hxl=0.0, hyl=0.0, radiation_flag=0, 
+                                 knl=[0.], ksl=[-0.])
+}),
+    element_names=[ii for ii in collider['lhcb1'].element_names][0:my_index-1])
 my_line.particle_ref = xp.Particles(
                     mass0=xp.PROTON_MASS_EV, q0=1, energy0=0.450e12)
 my_line.build_tracker()
@@ -178,3 +181,10 @@ print(aux.to_dict()['y'])
 # %%
 # get position of ip3 in the list of elements
 ip3_index = collider['lhcb1'].element_names.index('ip3')
+# concatenate dict a and b in python3.9
+# %%
+#aux = xp.Particles(
+#                    mass0=xp.PROTON_MASS_EV, q0=1, energy0=0.450e12, delta=1e-4)
+collider['lhcb1'].element_dict['mbxwt.1l2_tilt_entry'].track(aux)
+print(aux.to_dict()['y'])
+# %%
