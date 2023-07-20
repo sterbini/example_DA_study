@@ -168,9 +168,10 @@ my_line = xt.Line(
     elements=(collider['lhcb1'].element_dict | 
               {'a': xt.Multipole(_order=0, inv_factorial_order=1.0, 
                                  length=1.53, hxl=0.0, hyl=0.0, radiation_flag=0, 
-                                 knl=[0.], ksl=[-0.])
+                                 knl=[0.], ksl=[-0.]),
+                'b': xt.SRotation()
 }),
-    element_names=[ii for ii in collider['lhcb1'].element_names][0:my_index-1])
+    element_names=[ii for ii in collider['lhcb1'].element_names][0:my_index-1]+['b'])
 my_line.particle_ref = xp.Particles(
                     mass0=xp.PROTON_MASS_EV, q0=1, energy0=0.450e12)
 my_line.build_tracker()
