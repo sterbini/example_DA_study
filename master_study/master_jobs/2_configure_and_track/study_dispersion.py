@@ -54,6 +54,14 @@ my_df = pd.DataFrame(my_list)
 my_df[my_df['delta_px'] != 0]
 my_df[my_df['delta_py'] != 0]
 # %%
+import xpart as xp
+my_particle = xp.Particles(p0c=450e9, #eV
+             q0=1, delta=1e-4,
+             mass0=xp.PROTON_MASS_EV)
+print(my_particle.to_dict())
+collider['lhcb1'].element_dict['mbxwt.1l2'].track(my_particle)
+print(my_particle.to_dict())
+# %% 
 collider['lhcb1'].element_dict['bb_lr.r1b1_01'].to_dict()
 # %%
 collider['lhcb1'].element_dict['bb_ho.c1b1_00'].to_dict()
@@ -125,3 +133,48 @@ plt.title(f'Dispersion')
 plt.legend()
 plt.grid(True)
 # %%
+aux = twiss_b1[['dy','name'],:].to_pandas()
+aux[aux['dy']>1e-8]
+# %%
+aux = collider['lhcb1'].twiss(ele_start= 'mbxwt.1l2', 
+                              ele_stop='mbxwt.1l2', 
+                              twiss_init= 'periodic')
+aux['dy',:]
+# %%
+my_line = xt.Line(
+    elements=[xt.Drift(length=2.), collider['lhcb1'].element_dict['mbxwt.1l2']],
+    element_names=['drift_0', 'x'])
+my_line.particle_ref = xp.Particles(
+                    mass0=xp.PROTON_MASS_EV, q0=1, energy0=0.450e12)
+my_line.build_tracker()
+my_line.twiss(twiss_init='preserve')
+# %%
+# %%
+import xpart as xp
+my_particle = xp.Particles(p0c=450e9, #eV
+             q0=1, delta=1e-4,
+             mass0=xp.PROTON_MASS_EV)
+print(my_particle.to_dict())
+collider['lhcb1'].track(my_particle)
+
+# %%
+# %%
+collider['lhcb1'].discard_tracker()
+
+my_index = collider['lhcb1'].element_names.index('mbxwt.1l2')
+my_index = collider['lhcb1'].element_names.index('ip5')
+
+
+my_line = xt.Line(
+    elements=collider['lhcb1'].element_dict,
+    element_names=[ii for ii in collider['lhcb1'].element_names][:my_index-1])
+my_line.particle_ref = xp.Particles(
+                    mass0=xp.PROTON_MASS_EV, q0=1, energy0=0.450e12)
+my_line.build_tracker()
+aux = xp.Particles(
+                    mass0=xp.PROTON_MASS_EV, q0=1, energy0=0.450e12, delta=1e-4)
+my_line.track(aux)
+print(aux.to_dict()['y'])
+# %%
+# get position of ip3 in the list of elements
+ip3_index = collider['lhcb1'].element_names.index('ip3')
